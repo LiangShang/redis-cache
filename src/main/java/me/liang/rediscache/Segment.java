@@ -3,8 +3,7 @@ package me.liang.rediscache;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.LinkedTransferQueue;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.atomic.AtomicLong;
 
 /**
@@ -26,13 +25,13 @@ public class Segment {
     private final long evictThreshold;
 
     // To implement LRU, we need a queue to record the access( read and write ) recency of an entity
-    private BlockingQueue<String> recencyQueue;
+    private ConcurrentLinkedQueue<String> recencyQueue;
 
 
     public Segment(long maxVolume) {
         this.maxVolume = maxVolume;
         this.currentVolume = new AtomicLong(0);
-        this.recencyQueue = new LinkedTransferQueue<>();
+        this.recencyQueue = new ConcurrentLinkedQueue<>();
         // the init threshold is 75% of the maxVolume
         this.evictThreshold = maxVolume /4 * 3;
     }
@@ -47,12 +46,42 @@ public class Segment {
 
         Jedis jedis = jedisPool.getResource();
         jedis.set(key, value);
-        long c = currentVolume.incrementAndGet();
+        long c = moveToLast(key);
+        if (evictThreshold < c) {
+            // too many keys in cache so try to evict the
+            evictByLRU(jedis);
+        }
         return true;
 
     }
 
+    public String get(String key) {
+        Jedis jedis = jedisPool.getResource();
+        String value = jedis.get(key);
+        if (value != null) {
+            moveToLast(key);
+        }
+        return value;
 
+    }
+
+    private void evictByLRU(Jedis jedis) {
+        String toBeRemoved = recencyQueue.poll();
+        jedis.del(toBeRemoved);
+        currentVolume.decrementAndGet();
+    }
+
+    // TODO change to an atomic action
+    private long moveToLast(String key) {
+        long c;
+        if (!recencyQueue.remove(key)) {
+            c = currentVolume.incrementAndGet();
+        } else {
+            c = currentVolume.get();
+        }
+        recencyQueue.offer(key);
+        return c;
+    }
 
 
 }
