@@ -10,8 +10,14 @@ it satisfies that
 
 
 Later it may support and manage distributed redis
+
 it supports that
 *. define a maximum volume
 *. cache update strategy: LRU
 *. cache expires on write or last-read
 *. thread safe
+
+## We need 2 metrics to evaluate the performance of this cache
+
+*. the throughput
+*. the thread-safe feature

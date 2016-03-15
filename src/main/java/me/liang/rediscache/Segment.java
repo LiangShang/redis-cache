@@ -72,6 +72,7 @@ public class Segment {
     }
 
     // TODO change to an atomic action
+    // used by set(String key, String value)
     private long moveToLast(String key) {
         long c;
         if (!recencyQueue.remove(key)) {
