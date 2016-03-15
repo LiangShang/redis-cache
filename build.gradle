@@ -9,5 +9,5 @@ repositories {
 
 dependencies {
     testCompile 'junit:junit:4.12'
-    testCompile 'redis.clients:jedis:2.8.0'
+    compile 'redis.clients:jedis:2.8.0'
 }
