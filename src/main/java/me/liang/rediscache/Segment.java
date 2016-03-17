@@ -45,9 +45,9 @@ public class Segment {
     public boolean set(String key, String value) {
 
         Jedis jedis = jedisPool.getResource();
-        jedis.set(key, value);
+        long result = jedis.setnx(key, value);
         long c = moveToLast(key);
-        if (evictThreshold < c) {
+        if (result == 1 && evictThreshold < c) {
             // too many keys in cache so try to evict the
             evictByLRU(jedis);
         }
