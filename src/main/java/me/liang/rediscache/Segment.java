@@ -44,24 +44,26 @@ public class Segment {
      */
     public boolean set(String key, String value) {
 
-        Jedis jedis = jedisPool.getResource();
-        long result = jedis.setnx(key, value);
-        long c = moveToLast(key);
-        if (result == 1 && evictThreshold < c) {
-            // too many keys in cache so try to evict the
-            evictByLRU(jedis);
+        try (Jedis jedis = jedisPool.getResource()) {
+            long result = jedis.setnx(key, value);
+            long c = moveToLast(key);
+            if (result == 1 && evictThreshold < c) {
+                // too many keys in cache so try to evict the
+                evictByLRU(jedis);
+            }
+            return true;
         }
-        return true;
 
     }
 
     public String get(String key) {
-        Jedis jedis = jedisPool.getResource();
-        String value = jedis.get(key);
-        if (value != null) {
-            moveToLast(key);
+        try(Jedis jedis = jedisPool.getResource()) {
+            String value = jedis.get(key);
+            if (value != null) {
+                moveToLast(key);
+            }
+            return value;
         }
-        return value;
 
     }
 
