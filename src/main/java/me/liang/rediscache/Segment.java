@@ -36,6 +36,11 @@ public class Segment {
         this.evictThreshold = maxVolume /4 * 3;
     }
 
+    public Segment jedisPool(JedisPool jedisPool) {
+        this.jedisPool = jedisPool;
+        return this;
+    }
+
     /**
      * set key-value pair to the redis
      * @param key key
