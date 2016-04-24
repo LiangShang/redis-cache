@@ -5,6 +5,7 @@ import redis.clients.jedis.JedisPool;
 public class Cache {
 
     private final int segmentCount = 16;
+    private final int segmentMask = segmentCount - 1;
 
     Segment[] segments = new Segment[segmentCount];
 
@@ -12,6 +13,14 @@ public class Cache {
 
     public Segment[] getSegments() {
         return segments;
+    }
+
+    public boolean set(String key, String value) {
+        return segments[key.hashCode() & segmentMask].set(key, value);
+    }
+
+    public String get(String key) {
+        return segments[key.hashCode() & segmentMask].get(key);
     }
 
 

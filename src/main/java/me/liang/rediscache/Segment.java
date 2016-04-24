@@ -36,6 +36,15 @@ public class Segment {
         this.evictThreshold = maxVolume /4 * 3;
     }
 
+    public String showCurrentStatus() {
+        StringBuffer sb = new StringBuffer();
+        sb.append("[ current volume: ");
+        sb.append(currentVolume);
+        sb.append(" current recency queue: ");
+        sb.append(recencyQueue);
+        return sb.toString();
+    }
+
     public Segment jedisPool(JedisPool jedisPool) {
         this.jedisPool = jedisPool;
         return this;
