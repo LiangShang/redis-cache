@@ -20,3 +20,19 @@ it supports that
 
 *. the throughput
 *. the thread-safe feature
+
+
+## Usage
+
+### Init a Cache Instance
+
+    Cache testedCache = Cache.newBuilder()
+            .jedisPool(jedisPool)
+            .maxVolume(maxValume)
+            .build();
+
+### Use the Cache
+    
+    testedCache.set(key, value);
+    
+    testedCache.get(key);
