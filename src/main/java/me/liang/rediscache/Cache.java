@@ -28,9 +28,12 @@ public class Cache {
     public static class Builder {
 
         private JedisPool jedisPool;
-        private long maxVolume;
+        private long maxVolume = Integer.MAX_VALUE;
 
         public Cache build() {
+            if (jedisPool == null) {
+                throw new IllegalStateException("The jedisPool must not be null");
+            }
             Cache result = new Cache();
             Segment[] segments = result.getSegments();
             for (int i = 0; i < segments.length; i++) {
