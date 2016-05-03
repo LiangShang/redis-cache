@@ -4,6 +4,7 @@
 ## This is a cache that wraps redis using jedis lib
 
 it satisfies that
+
 1. cache update strategy: LRU
 2. thread safe
 
@@ -11,6 +12,7 @@ it satisfies that
 Later it may support and manage distributed redis
 
 it supports that
+
 *. define a maximum volume
 *. cache update strategy: LRU
 *. cache expires on write or last-read
@@ -24,14 +26,14 @@ it supports that
 
 ## Usage
 
-### Init a Cache Instance
+#### Init a Cache Instance
 
     Cache testedCache = Cache.newBuilder()
             .jedisPool(jedisPool)
             .maxVolume(maxValume)
             .build();
 
-### Use the Cache
+#### Use the Cache
     
     testedCache.set(key, value);
     
