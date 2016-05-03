@@ -13,7 +13,6 @@ import java.util.concurrent.atomic.AtomicLong;
  */
 public class Segment {
 
-    // FIXME find a way to init this jedisPool
     private JedisPool jedisPool;
 
     private AtomicLong currentVolume;
@@ -39,7 +38,7 @@ public class Segment {
     public String showCurrentStatus() {
         StringBuffer sb = new StringBuffer();
         sb.append("[ current volume: ");
-        sb.append(currentVolume);
+        sb.append(getCurrentVolume());
         sb.append(" current recency queue: ");
         sb.append(recencyQueue);
         return sb.toString();
@@ -62,7 +61,7 @@ public class Segment {
             long result = jedis.setnx(key, value);
             long c = moveToLast(key);
             if (result == 1 && evictThreshold < c) {
-                // too many keys in cache so try to evict the
+                // too many keys in cache so try to evict by LRU
                 evictByLRU(jedis);
             }
             return true;
@@ -87,8 +86,14 @@ public class Segment {
         currentVolume.decrementAndGet();
     }
 
-    // TODO change to an atomic action
-    // used by set(String key, String value)
+    /**
+     * move the key to the last location in the recency queue
+     *
+     * TODO change to an atomic action
+     * used by set(String key, String value)
+     * @param key
+     * @return the currentVolume
+     */
     private long moveToLast(String key) {
         long c;
         if (!recencyQueue.remove(key)) {
@@ -100,5 +105,11 @@ public class Segment {
         return c;
     }
 
+    public long getCurrentVolumeAsLong() {
+        return getCurrentVolume().get();
+    }
 
+    public AtomicLong getCurrentVolume() {
+        return currentVolume;
+    }
 }
