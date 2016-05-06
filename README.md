@@ -20,8 +20,8 @@ it supports that
 
 ## We need 2 metrics to evaluate the performance of this cache
 
-*. the throughput
-*. the thread-safe feature
+* the throughput
+* the thread-safe feature
 
 
 ## Usage
