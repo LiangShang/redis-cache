@@ -35,6 +35,10 @@ it supports that
 
 #### Use the Cache
     
+* put value into cahce
+
     testedCache.set(key, value);
-    
+
+* get value from cache
+
     testedCache.get(key);
