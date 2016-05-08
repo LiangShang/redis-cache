@@ -37,8 +37,11 @@ it supports that
     
 * put value into cahce
 
+
     testedCache.set(key, value);
 
+
 * get value from cache
+
 
     testedCache.get(key);
