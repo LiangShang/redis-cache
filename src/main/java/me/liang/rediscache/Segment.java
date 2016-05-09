@@ -26,6 +26,8 @@ public class Segment {
     // To implement LRU, we need a queue to record the access( read and write ) recency of an entity
     private ConcurrentLinkedQueue<String> recencyQueue;
 
+    private int expireAfterAccessSeconds;
+
 
     public Segment(long maxVolume) {
         this.maxVolume = maxVolume;
@@ -49,6 +51,11 @@ public class Segment {
         return this;
     }
 
+    public Segment expireAfterAccessSeconds(int expireAfterAccessSeconds) {
+        this.expireAfterAccessSeconds = expireAfterAccessSeconds;
+        return this;
+    }
+
     /**
      * set key-value pair to the redis
      * @param key key
@@ -59,6 +66,7 @@ public class Segment {
 
         try (Jedis jedis = jedisPool.getResource()) {
             long result = jedis.setnx(key, value);
+            jedis.expire(key, expireAfterAccessSeconds);
             long c = moveToLast(key);
             if (result == 1 && evictThreshold < c) {
                 // too many keys in cache so try to evict by LRU

@@ -2,6 +2,8 @@ package me.liang.rediscache;
 
 import redis.clients.jedis.JedisPool;
 
+import java.util.concurrent.TimeUnit;
+
 public class Cache {
 
     private final int segmentCount = 16;
@@ -29,15 +31,24 @@ public class Cache {
 
         private JedisPool jedisPool;
         private long maxVolume = Integer.MAX_VALUE;
+        private long expireAfterAccessSeconds = 60;  // default value is 60 seconds
 
         public Cache build() {
             if (jedisPool == null) {
                 throw new IllegalStateException("The jedisPool must not be null");
             }
+            if (expireAfterAccessSeconds <= 0) {
+                throw new IllegalStateException("The expireAfterAccessSeconds must be larger than 0");
+            }
+            if (Integer.MAX_VALUE <= expireAfterAccessSeconds) {
+                expireAfterAccessSeconds = Integer.MAX_VALUE;
+            }
             Cache result = new Cache();
             Segment[] segments = result.getSegments();
             for (int i = 0; i < segments.length; i++) {
-                segments[i] = new Segment(maxVolume).jedisPool(jedisPool);
+                segments[i] = new Segment(maxVolume)
+                        .jedisPool(jedisPool)
+                        .expireAfterAccessSeconds((int)expireAfterAccessSeconds);
             }
             return result;
         }
@@ -52,6 +63,9 @@ public class Cache {
             return this;
         }
 
-
+        public Builder expireAfterAccess(long duration, TimeUnit unit) {
+            this.expireAfterAccessSeconds = unit.toSeconds(duration);
+            return this;
+        }
     }
 }
