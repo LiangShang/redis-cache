@@ -80,6 +80,7 @@ public class Segment {
     public String get(String key) {
         try(Jedis jedis = jedisPool.getResource()) {
             String value = jedis.get(key);
+            jedis.expire(key, expireAfterAccessSeconds);
             if (value != null) {
                 moveToLast(key);
             }
