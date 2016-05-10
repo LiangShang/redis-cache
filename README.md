@@ -31,6 +31,7 @@ it supports that
     Cache testedCache = Cache.newBuilder()
             .jedisPool(jedisPool)
             .maxVolume(maxValume)
+            .expireAfterAccess(1, TimeUnit.SECONDS)
             .build();
 
 #### Use the Cache
