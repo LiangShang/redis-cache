@@ -36,6 +36,23 @@ public class Node {
 
     }
 
+    public boolean removeItself() {
+        Node pre = this.pre;
+        Node next = this.next;
+
+        if (pre != null) {
+            pre.next = next;
+        }
+        if (next != null) {
+            next.pre = pre;
+        }
+
+        this.key = null;
+
+        return true;
+
+    }
+
     public Node(String key) {
         this.key = key;
     }
