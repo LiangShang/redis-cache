@@ -7,6 +7,7 @@ it satisfies that
 
 1. cache update strategy: LRU
 2. thread safe
+3. nonblocking save and get
 
 
 Later it may support and manage distributed redis
