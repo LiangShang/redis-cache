@@ -9,6 +9,11 @@ public class Node {
     Node pre;
     Node next;
 
+    /**
+     * Add a node to its next (after it)
+     * @param node
+     * @return
+     */
     public boolean addToNext(Node node) {
 
         Node nnext = this.next;
@@ -22,6 +27,11 @@ public class Node {
         return true;
     }
 
+    /**
+     * Add a node before it
+     * @param node
+     * @return
+     */
     public boolean addToPre(Node node) {
 
         Node ppre = this.pre;
@@ -36,6 +46,10 @@ public class Node {
 
     }
 
+    /**
+     * Remove itself from the train
+     * @return
+     */
     public boolean removeItself() {
         Node pre = this.pre;
         Node next = this.next;
@@ -51,6 +65,15 @@ public class Node {
 
         return true;
 
+    }
+
+    /**
+     * Set itself invalid
+     * @return
+     */
+    public boolean invalid() {
+        this.key = null;
+        return true;
     }
 
     public Node(String key) {
