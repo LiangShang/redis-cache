@@ -20,11 +20,26 @@ public class RecencyQueue {
      * @param node
      * @return
      */
-    public boolean add(Node node) {
+    private boolean add(Node node) {
 
         if (head == null) head = node;
         if (tail == null) tail = node;
+
+        if (tail != node) {
+            tail.next = node;
+            tail = node;
+        }
+
         return true;
 
+    }
+
+    public boolean add(String key) {
+        return add(new Node(key));
+    }
+
+    private boolean remove(Node node) {
+        // todo implement this function
+        return true;
     }
 }
