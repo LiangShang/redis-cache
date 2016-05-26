@@ -39,7 +39,20 @@ public class RecencyQueue {
     }
 
     private boolean remove(Node node) {
+        if (node == null) return false;
         // todo implement this function
+        if (head == node) {
+            head = node.next;
+        }
+        if (tail == node) {
+            tail = node.pre;
+        }
+        node.removeItself();
+        node.invalid();
         return true;
+    }
+
+    public boolean remove(String key) {
+        return remove(keyNodeMapping.get(key));
     }
 }
