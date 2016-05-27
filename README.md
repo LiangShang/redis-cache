@@ -19,6 +19,8 @@ it supports that
 * cache expires on write or last-read
 * thread safe
 
+But it is single-node management...
+
 ## We need 2 metrics to evaluate the performance of this cache
 
 * the throughput
