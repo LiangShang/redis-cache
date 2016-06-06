@@ -10,4 +10,5 @@ repositories {
 dependencies {
     testCompile 'junit:junit:4.12'
     compile 'redis.clients:jedis:2.8.0'
+    compile 'org.redisson:redisson:2.2.14'
 }
