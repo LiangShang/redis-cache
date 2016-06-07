@@ -21,4 +21,8 @@ public class JedisUtil {
 
         return true;
     }
+
+    public void redissonTest() {
+
+    }
 }
