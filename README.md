@@ -11,6 +11,7 @@ it satisfies that
 
 
 Later it may support and manage distributed redis
+Now it is reactored with [Redisson](https://github.com/mrniko/redisson)
 
 it supports that
 
