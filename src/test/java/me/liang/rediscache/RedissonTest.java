@@ -37,14 +37,26 @@ public class RedissonTest {
 
         RedissonClient client = Redisson.create();
         RBucket<SimpleObject> rBucket = client.getBucket("simple_object");
-        rBucket.compareAndSet(null, so);
+        Assert.assertTrue(rBucket.compareAndSet(null, so));
         Assert.assertFalse(rBucket.compareAndSet(null, so));
 
 
         Assert.assertEquals(so, rBucket.get());
-
+        rBucket.delete();
 
     }
+
+    @Test
+    public void testNullObjects() {
+        RedissonClient client = Redisson.create();
+        RBucket<SimpleObject> rBucket = client.getBucket("an_obj_that_should_not_exist");
+        Assert.assertNull(rBucket.get());
+    }
+
+
+
+
+
 
     // INNER CLASS MUST BE DEFINED AS static class for the sake of jackson deserialization
     static class SimpleObject implements Serializable{
@@ -76,6 +88,5 @@ public class RedissonTest {
             return Objects.hashCode(intAttr, doubleAttr, stringAttr);
         }
     }
-
 
 }
