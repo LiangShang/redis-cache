@@ -5,6 +5,7 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.redisson.Redisson;
 import org.redisson.RedissonClient;
+import org.redisson.core.Node;
 import org.redisson.core.RAtomicLong;
 import org.redisson.core.RBucket;
 import org.redisson.core.RMapCache;
@@ -53,6 +54,18 @@ public class RedissonTest {
         Assert.assertNull(rBucket.get());
     }
 
+    @Test(expected = ClassCastException.class)
+    public void testDiffClasses() {
+        RedissonClient client = Redisson.create();
+        RBucket<String> rBucket = client.getBucket("an_obj_that_should_be_a_string");
+        rBucket.set("hehehe");
+
+        RBucket<Node> rNodeBucket = client.getBucket("an_obj_that_should_be_a_string");
+        Node n = rNodeBucket.get();
+
+        System.out.println(n);
+
+    }
 
 
 

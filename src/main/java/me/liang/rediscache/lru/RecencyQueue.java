@@ -40,6 +40,15 @@ public class RecencyQueue {
     }
 
     /**
+     * add the key directly after the head
+     * @param key
+     * @return
+     */
+    public boolean add(String key) {
+        return addAfter(headKey, key);
+    }
+
+    /**
      * add means adding a node the the head of the queue
      * <p>
      * The queue before adding is HEAD <-> 4 <-> 3 <-> 2 <-> 1 <-> TAIL
@@ -71,7 +80,6 @@ public class RecencyQueue {
         RBucket<Node> nextBucket = redissonClient.getBucket(former.getNext());
         Node next = nextBucket.get();
 
-
         addedNode = new Node(key, formerKey, next.getKey());
         Node newFormer = new Node(former).setNext(key);
         Node newNext = new Node(next).setPre(key);
@@ -80,5 +88,33 @@ public class RecencyQueue {
                 addedBucket.compareAndSet(null, addedNode) &&
                 nextBucket.compareAndSet(next, newNext);
 
+    }
+
+    /**
+     * remove the key (if exists) from the queue
+     * @param key
+     * @return
+     */
+    public boolean remove(String key) {
+        RBucket<Node> removedBucket = redissonClient.getBucket(key);
+        Node removedNode;
+        try{
+            removedNode = removedBucket.get();
+        } catch (ClassCastException cce) {
+            return false;
+        }
+        if (removedNode == null) return false;
+        RBucket<Node> formerBucket = redissonClient.getBucket(removedNode.getPre());
+        Node former = formerBucket.get();
+        Node newFormer = new Node(former);
+        RBucket<Node> nextBucket = redissonClient.getBucket(removedNode.getNext());
+        Node next = nextBucket.get();
+        Node newNext = new Node(next);
+        newFormer.setNext(removedNode.getNext());
+        newNext.setPre(removedNode.getPre());
+
+        return formerBucket.compareAndSet(former, newFormer) &&
+                removedBucket.delete() &&
+                nextBucket.compareAndSet(next, newNext);
     }
 }
